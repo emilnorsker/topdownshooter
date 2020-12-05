@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>shooter</title>
+</head>
+<body>
+
+<players>
+<!--  todo players  -->
+</players>
+
+<bullets>
+
+</bullets>
+<!--  todo bullets are object that have a direction an will move with a same speed
+      todo in a direction  -->
+<objects>
+<!--  todo add objects that cant be passed by players or bullets   -->
+</objects>
+
+
+<canvas class="game-board">
+
+</canvas>
+
+<script>
+    var stompClient = null;
+    var path = "/myMessages"
+    function connect()
+    {
+        let socket = new SockJS +
+            JS("endpointOne");
+        stompClient = Stomp.over(socket); //streaming text oriented messagin protocol (STOMP)
+        stompClient.connect({}, function (frame) { // callback hvis connection virker || {} er et javascript object
+            log("connection succefull")
+            stompClient.subscribe("/topic/messages", function (res) { // subscriber to the path we defined in home controller
+                let txt = JSON.parse(res.body).response;
+                console.log("*****************************************")
+                log("server response" + txt); // prints the response of the server
+
+            })
+        })
+    }
+    function sayHi() {
+        stompClient.send(path, {}, JSON.stringify({message: "hello"}))
+    }
+    function  log(string)
+    {
+        console.log(string);
+    }
+</script>
+
+</body>
+</html>
