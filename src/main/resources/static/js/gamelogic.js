@@ -42,7 +42,6 @@
         x;
         y;
         angle;
-
         constructor(sprite_location, position_x, position_y, height, width, angle) {
             this.sprite = new Image();
             this.sprite.src = sprite_location;
