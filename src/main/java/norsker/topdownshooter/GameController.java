@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller // skal ikke være en restcontroller
-public class HomeController
+public class GameController
 {
 
     int increasingNumber = 0;

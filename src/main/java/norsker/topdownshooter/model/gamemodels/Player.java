@@ -27,6 +27,7 @@ public class Player extends Gameobject implements Updatable
     {
         this.moveDirection=input.getMoveDirection();
         this.angle = input.getPlayerDirection();
+        this.isMouseDown = input.isMouseDown();
     }
 
     void move()
@@ -42,6 +43,7 @@ public class Player extends Gameobject implements Updatable
         if (weapon.canShoot())
         {
             GameInfo.getInstance().addObject(new Bullet(this,  x,  y, angle));
+            isMouseDown = false;
         }
     }
 
@@ -53,8 +55,7 @@ public class Player extends Gameobject implements Updatable
         if (isMouseDown)
             shoot();
         moveDirection = new int[]{0, 0};
-        angle = 0;
-        isMouseDown = false;
+
     }
 
 

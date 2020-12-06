@@ -10,12 +10,9 @@
     let clientMousePos_y;
     let clientLeftMouseDown;
     let clientLastpressedKey;
-
-    var player_x;
-    var player_y;
-
-
+    var player;
     const playerId = document.getElementById("clientId").innerHTML;
+
 
     document.onkeydown = function (event) {
         clientLastpressedKey = event.key;
@@ -29,10 +26,8 @@
         clientLeftMouseDown = true;
     }
     canvas.addEventListener('mousemove', (event) => {
-
-        clientMousePos_x = event.clientX;
-        clientMousePos_y = event.clientY;
-        console.log(event.clientX + "  " + event.clientY)
+        clientMousePos_x = event.clientX - (canvas.offsetLeft - window.pageXOffset);
+        clientMousePos_y = event.clientY - (canvas.offsetTop - window.pageYOffset);
     })
 
 
@@ -53,12 +48,12 @@
             this.y = position_y;
             this.angle = angle;
             this.draw = function () {
-                context.save()
-                let rad = this.angle * Math.PI / 180;
-                console.log(this.angle)
-                context.translate(this.x, this.y);
-                context.rotate(rad);
-                context.drawImage(this.sprite, this.x, this.y, this.height, this.width)
+                context.save();
+                context.translate(this.x-(width/2),this.y-((height/2)));
+                context.rotate((this.angle-90) * Math.PI/180.0);
+                console.log(-this.angle * Math.PI/180.0)
+                context.translate(-this.x-(width/2), -this.y-(height/2));
+                context.drawImage(this.sprite,this.x,this.y,this.width, this.height);
                 context.restore();
             }
         }
@@ -80,8 +75,7 @@
                     objects.forEach((object) => {
                         let gameComponent = new gameObject(object.sprite_location, object.x, object.y, object.height, object.width, object.angle);
                         if (object.playerId == playerId) {
-                            player_x = object.x;
-                            player_y = object.y;
+                            player = gameComponent;
                         }
                         gameObjects.push(gameComponent);
                     });
@@ -95,7 +89,7 @@
     function sendInputs() {
         let moveDir = [0, 0]; // player movement direction
         let playerDir = 0; // player direction in degrees
-        playerDir = clientMousePos_x;
+        playerDir = 0;
 
         if (clientLastpressedKey != null) {
 
@@ -127,7 +121,7 @@
             {
                 moveDirection: moveDir,
                 isMouseDown: clientLeftMouseDown,
-                playerDirection: getAngleDegrees(player_x, player_y, clientMousePos_x, clientMousePos_y, true),
+                playerDirection: getAngleDegrees(player.x, player.y, clientMousePos_x, clientMousePos_y),
                 playerId: playerId,
             }
         ))
@@ -155,43 +149,9 @@
             while (degrees >= 360) degrees -= 360;
             while (degrees < 0) degrees += 360;
         }
+        console.log("my x = "+fromX+"   their x="+toX)
         console.log(degrees)
         return degrees;
     }
 
-
-
-    stylePaddingLeft = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingLeft'], 10)      || 0;
-    stylePaddingTop  = parseInt(document.defaultView.getComputedStyle(canvas, null)['paddingTop'], 10)       || 0;
-    styleBorderLeft  = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderLeftWidth'], 10)  || 0;
-    styleBorderTop   = parseInt(document.defaultView.getComputedStyle(canvas, null)['borderTopWidth'], 10)   || 0;
-    // Some pages have fixed-position bars (like the stumbleupon bar) at the top or left of the page
-    // They will mess up mouse coordinates and this fixes that
-    var html = document.body.parentNode;
-    htmlTop = html.offsetTop;
-    htmlLeft = html.offsetLeft;
-
-    function getMouse(e, canvas) {
-    var element = canvas, offsetX = 0, offsetY = 0, mx, my;
-
-    // Compute the total offset. It's possible to cache this if you want
-    if (element.offsetParent !== undefined) {
-        do {
-            offsetX += element.offsetLeft;
-            offsetY += element.offsetTop;
-        } while ((element = element.offsetParent));
-    }
-
-    // Add padding and border style widths to offset
-    // Also add the <html> offsets in case there's a position:fixed bar (like the stumbleupon bar)
-    // This part is not strictly necessary, it depends on your styling
-    offsetX += stylePaddingLeft + styleBorderLeft + htmlLeft;
-    offsetY += stylePaddingTop + styleBorderTop + htmlTop;
-
-    mx = e.pageX - offsetX;
-    my = e.pageY - offsetY;
-
-    // We return a simple javascript object with x and y defined
-    return {x: mx, y: my};
-    }
 }

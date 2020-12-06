@@ -8,9 +8,7 @@
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <script th:src="@{/js/jquery.js}"></script>
 </head>
-<body>
-<canvas class="game-board" id="canvas" width="1000" height="1000">
-</canvas>
+<canvas class="game-board" id="canvas" width="600" height="600"></canvas>
 <div id="clientId"  th:text="${randomNumber}" style="display: none">
     <img alt="sry, your image is in another castle" th:src="@{/images/bullet.png}">
     <img alt="sry, your image is in another castle" th:src="@{/images/survivor.png}">
@@ -24,9 +22,7 @@
 
 <style>
     canvas {
-        background-color: darkcyan;
-        min-height: 1200px;
-        min-width: 800px;
+        background-color: grey;
         z-index: -10;
     }
 
@@ -38,5 +34,5 @@
         z-index: 10;
     }
 </style>
-</body>
+
 </html>
