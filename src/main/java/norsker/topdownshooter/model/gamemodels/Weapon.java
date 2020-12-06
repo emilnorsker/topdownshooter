@@ -5,11 +5,13 @@ public class Weapon implements Updatable
     int damage;
     int cooldown;
     int currentColdown = 0;
+    int velocity;
 
     public Weapon()
     {
-        damage = 10;
-        cooldown = 5;
+        velocity = 10;
+        damage = 40;
+        cooldown = 60;
     }
 
     public boolean canShoot()
@@ -49,5 +51,18 @@ public class Weapon implements Updatable
 
     public void setCurrentColdown(int currentColdown) {
         this.currentColdown = currentColdown;
+    }
+
+    public int getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(int velocity) {
+        this.velocity = velocity;
+    }
+
+    public void shoot()
+    {
+        this.currentColdown=cooldown;
     }
 }

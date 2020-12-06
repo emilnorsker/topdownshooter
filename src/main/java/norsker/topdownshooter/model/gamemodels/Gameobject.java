@@ -8,6 +8,7 @@ public class Gameobject
     int x;
     int y;
     int angle;
+    String type;
 
     public Gameobject(String sprite_location, int position_x, int position_y, int height, int width, int angle)
     {
@@ -17,11 +18,12 @@ public class Gameobject
         this.height=height;
         this.width = width;
         this.angle = angle;
+        this.type = this.getClass().getSimpleName();
     }
 
     public boolean intersects(Gameobject object)
     {
-        if (this.x < object.x + object.width && this.x + this.width > object.x && this.y < object.y + object.height && this.y + this.height > object.y)
+        if (this.x-width/2 < object.x + object.width && this.x-width/2 + this.width > object.x && this.y-height/2 < object.y + object.height && this.y-height/2 + this.height > object.y)
         {
             return true;
         }
@@ -46,6 +48,38 @@ public class Gameobject
 
     public int getY() {
         return y;
+    }
+
+    public void setSprite_location(String sprite_location) {
+        this.sprite_location = sprite_location;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public int getAngle() {

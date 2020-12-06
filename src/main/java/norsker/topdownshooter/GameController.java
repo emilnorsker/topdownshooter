@@ -39,7 +39,7 @@ public class GameController
         System.out.println("player spawned");
     }
 
-    @MessageMapping("/input") //definere pathen om stompclienten sendr til
+    @MessageMapping("/input") //definere pathen om stompclienten sender til
     public void handleMessage(Input input)
     {
         GameInfo.getInstance().getGameObjects().forEach(obj ->
@@ -62,8 +62,8 @@ public class GameController
     @GetMapping
     String home(Model model)
     {
-
         model.addAttribute("randomNumber", increasingNumber);
+        model.addAttribute("boardsize", GameInfo.getInstance().getBoardsize());
         increasingNumber++;
         return "game";
     }

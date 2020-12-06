@@ -25,12 +25,45 @@
     document.onmousedown = function (event) {
         clientLeftMouseDown = true;
     }
+    document.onmouseup = function (event) {
+        clientLeftMouseDown = false;
+    }
+
     canvas.addEventListener('mousemove', (event) => {
         clientMousePos_x = event.clientX - (canvas.offsetLeft - window.pageXOffset);
         clientMousePos_y = event.clientY - (canvas.offsetTop - window.pageYOffset);
     })
 
 
+    class bullet {
+        sprite;
+        width;
+        height;
+        x;
+        y;
+        angle;
+
+        constructor(sprite_location, position_x, position_y, height, width, angle) {
+            this.sprite = new Image();
+            this.sprite.src = sprite_location;
+            this.height = height;
+            this.width = width;
+            this.x = position_x;
+            this.y = position_y;
+            this.angle = angle;
+            this.draw = function () {
+                context.save();
+                context.translate(this.x,this.y);
+                context.rotate((this.angle-90) * Math.PI/180.0);
+                context.translate(-this.x, -this.y-height);
+                context.beginPath();
+                context.fillStyle = "#FF0000";
+                context.fillRect(this.x,this.y,this.width, this.height);
+                context.stroke();
+                context.restore();
+            }
+        }
+    }
     class gameObject {
         sprite;
         width;
@@ -49,11 +82,10 @@
             this.angle = angle;
             this.draw = function () {
                 context.save();
-                context.translate(this.x-(width/2),this.y-((height/2)));
+                context.translate(this.x,this.y);
                 context.rotate((this.angle-90) * Math.PI/180.0);
-                console.log(-this.angle * Math.PI/180.0)
-                context.translate(-this.x-(width/2), -this.y-(height/2));
-                context.drawImage(this.sprite,this.x,this.y,this.width, this.height);
+                context.translate(-this.x,-this.y);
+                context.drawImage(this.sprite, this.x-width,this.y-height/1.2,this.width,this.height);
                 context.restore();
             }
         }
@@ -73,7 +105,13 @@
                     let objects = JSON.parse(GameInfo.body).gameObjects;
                     let gameObjects = [];
                     objects.forEach((object) => {
-                        let gameComponent = new gameObject(object.sprite_location, object.x, object.y, object.height, object.width, object.angle);
+                        let gameComponent;
+                        console.log(object.type)
+                        if (object.type=="Player") {
+                             gameComponent = new gameObject(object.sprite_location, object.x, object.y, object.height, object.width, object.angle);
+                        }
+                        else
+                             gameComponent = new bullet(object.sprite_location, object.x, object.y, object.height, object.width, object.angle)
                         if (object.playerId == playerId) {
                             player = gameComponent;
                         }
@@ -116,16 +154,14 @@
             }
         }
 
-
         stompClient.send("/input", {}, JSON.stringify(
             {
                 moveDirection: moveDir,
-                isMouseDown: clientLeftMouseDown,
                 playerDirection: getAngleDegrees(player.x, player.y, clientMousePos_x, clientMousePos_y),
+                isMouseDown: clientLeftMouseDown,
                 playerId: playerId,
             }
         ))
-        clientLeftMouseDown = false;
     }
 
     function update(gameObjects) {
@@ -136,7 +172,6 @@
         })
 
         sendInputs()
-        // todo send inputs
     }
 
 
@@ -149,8 +184,6 @@
             while (degrees >= 360) degrees -= 360;
             while (degrees < 0) degrees += 360;
         }
-        console.log("my x = "+fromX+"   their x="+toX)
-        console.log(degrees)
         return degrees;
     }
 

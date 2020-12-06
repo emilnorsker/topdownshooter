@@ -27,14 +27,14 @@ public class Player extends Gameobject implements Updatable
     {
         this.moveDirection=input.getMoveDirection();
         this.angle = input.getPlayerDirection();
-        this.isMouseDown = input.isMouseDown();
+        this.isMouseDown = input.getIsMouseDown();
     }
 
     void move()
     {
-        int speed = 5;
-        x+=moveDirection[0]*speed; //Math.cos(Math.toDegrees(angle))
-        y+=moveDirection[1]*speed; //Math.sin(Math.toDegrees(angle))
+        int speed = 3;
+        x+=moveDirection[0]*speed;
+        y+=moveDirection[1]*speed;
 
     }
 
@@ -42,7 +42,9 @@ public class Player extends Gameobject implements Updatable
     {
         if (weapon.canShoot())
         {
-            GameInfo.getInstance().addObject(new Bullet(this,  x,  y, angle));
+            weapon.shoot();
+            GameInfo.getInstance().addObject(new Bullet(this,  x, y, angle,  weapon.damage, weapon.velocity)); //0.66 for aspect
+
             isMouseDown = false;
         }
     }
@@ -50,11 +52,15 @@ public class Player extends Gameobject implements Updatable
     @Override
     public void update()
     {
+        if (health<1)
+            GameInfo.getInstance().removeObject(this);
         weapon.update();
         move();
         if (isMouseDown)
             shoot();
         moveDirection = new int[]{0, 0};
+
+
 
     }
 
@@ -82,5 +88,29 @@ public class Player extends Gameobject implements Updatable
 
     public boolean isMouseDown() {
         return isMouseDown;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public void setMoveDirection(int[] moveDirection) {
+        this.moveDirection = moveDirection;
+    }
+
+    public void setAngle(int angle) {
+        this.angle = angle;
+    }
+
+    public void setMouseDown(boolean mouseDown) {
+        isMouseDown = mouseDown;
     }
 }

@@ -9,7 +9,6 @@ public class Input
 
 
     public Input() {
-
     }
 
 
@@ -29,7 +28,7 @@ public class Input
         this.playerDirection = playerDirection;
     }
 
-    public boolean isMouseDown() {
+    public boolean getIsMouseDown() {
         return isMouseDown;
     }
 
