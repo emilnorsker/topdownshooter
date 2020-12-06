@@ -11,7 +11,7 @@ public class Weapon implements Updatable
     {
         velocity = 10;
         damage = 40;
-        cooldown = 60;
+        cooldown = 5;
     }
 
     public boolean canShoot()
