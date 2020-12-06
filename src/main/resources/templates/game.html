@@ -1,55 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>shooter</title>
+
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script th:src="@{/js/jquery.js}"></script>
 </head>
 <body>
-
-<players>
-<!--  todo players  -->
-</players>
-
-<bullets>
-
-</bullets>
-<!--  todo bullets are object that have a direction an will move with a same speed
-      todo in a direction  -->
-<objects>
-<!--  todo add objects that cant be passed by players or bullets   -->
-</objects>
-
-
-<canvas class="game-board">
-
+<canvas class="game-board" id="canvas" width="1000" height="1000">
 </canvas>
+<div id="clientId"  th:text="${randomNumber}" style="display: none">
+    <img alt="sry, your image is in another castle" th:src="@{/images/bullet.png}">
+    <img alt="sry, your image is in another castle" th:src="@{/images/survivor.png}">
+</div>
 
-<script>
-    var stompClient = null;
-    var path = "/myMessages"
-    function connect()
-    {
-        let socket = new SockJS +
-            JS("endpointOne");
-        stompClient = Stomp.over(socket); //streaming text oriented messagin protocol (STOMP)
-        stompClient.connect({}, function (frame) { // callback hvis connection virker || {} er et javascript object
-            log("connection succefull")
-            stompClient.subscribe("/topic/messages", function (res) { // subscriber to the path we defined in home controller
-                let txt = JSON.parse(res.body).response;
-                console.log("*****************************************")
-                log("server response" + txt); // prints the response of the server
+<button onclick="connect()" >connect</button>
 
-            })
-        })
-    }
-    function sayHi() {
-        stompClient.send(path, {}, JSON.stringify({message: "hello"}))
-    }
-    function  log(string)
-    {
-        console.log(string);
-    }
-</script>
 
+
+<script th:src="@{/js/gamelogic.js}"></script>
+
+<style>
+    canvas {
+        background-color: darkcyan;
+        min-height: 1200px;
+        min-width: 800px;
+        z-index: -10;
+    }
+
+
+    canvas player{
+        z-index: 1;
+    }
+    canvas player img{
+        z-index: 10;
+    }
+</style>
 </body>
 </html>
