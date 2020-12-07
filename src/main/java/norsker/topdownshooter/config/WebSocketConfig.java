@@ -16,7 +16,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer // inte
 
     /**
      *
-     * @param registry a registry is where you can register your endpoint
+     * @param registry a registry where you can register your endpoints
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry)

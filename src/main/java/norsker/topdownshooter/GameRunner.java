@@ -21,14 +21,17 @@ public class GameRunner{
     @Autowired
     private SimpMessagingTemplate template;
 
+    /**
+     * Defines our update method, run a update tick, and send the new gamestate to the clients that are subscribed to /topic/update
+     * fixed rate with parameter of 10 means ever 10 millisecond run this.
+     */
     @Scheduled(fixedRate = 10)
     public synchronized void update() {
         GameInfo info = GameInfo.getInstance();
         lastTick = System.nanoTime() - lastTicktime;
 
-        //if the last time is greater than 100 milliseconds
         try {
-            if (info.isUpdated()) {
+            if (info.isUpdated()) { // no need to update if the previous cycle is not finished
                 info.setUpdated(false);
                 //the update function that run the game uses game info
 

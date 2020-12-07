@@ -3,9 +3,6 @@
     const context = canvas.getContext('2d');
     context.imageSmoothingEnabled = false;
     let stompClient = null;
-    document.onload = function () {
-        var playerId = document.getElementById("clientId").value;
-    }
     let clientMousePos_x;
     let clientMousePos_y;
     let clientLeftMouseDown;
@@ -13,7 +10,7 @@
     var player;
     const playerId = document.getElementById("clientId").innerHTML;
 
-
+    //register inputs from client
     document.onkeydown = function (event) {
         clientLastpressedKey = event.key;
     }
@@ -28,13 +25,12 @@
     document.onmouseup = function (event) {
         clientLeftMouseDown = false;
     }
-
     canvas.addEventListener('mousemove', (event) => {
         clientMousePos_x = event.clientX - (canvas.offsetLeft - window.pageXOffset);
         clientMousePos_y = event.clientY - (canvas.offsetTop - window.pageYOffset);
     })
 
-
+    //our bullet class
     class bullet {
         sprite;
         width;
@@ -63,7 +59,8 @@
             }
         }
     }
-    class gameObject {
+    //game object class
+    class GameObject {
         sprite;
         width;
         height;
@@ -90,24 +87,28 @@
         }
     }
 
+    /**
+     * Connect enables our client to connect to the server.
+     */
     function connect() {
         if (stompClient == null) {
             console.log("attempting connection with client id : " + playerId);
             let socket = new SockJS("endpointOne");
             stompClient = Stomp.over(socket); //streaming text oriented messagin protocol (STOMP)
-            stompClient.connect({}, function (frame) { // callback hvis connection virker || {} er et javascript object
+            stompClient.connect({}, function (frame) { // callback on connect
                 console.log("connection succefull");
-                stompClient.debug = null;
-                stompClient.send("/createPlayer", {}, JSON.stringify({message: playerId})); // tells the server tht a new player a connected
-                stompClient.subscribe("/topic/update", function (GameInfo) { // subscriber to the path we defined in home controller
+                stompClient.debug = null;  // todo VIGTIGT  VIS TIL JON
 
+                stompClient.send("/createPlayer", {}, JSON.stringify({message: playerId})); // tells the server that a new client is connected
+                stompClient.subscribe("/topic/update", function (GameInfo) { // subscribe to the path we defined in our controller
+                    // parsing our gameinfo.gameobjects
                     let objects = JSON.parse(GameInfo.body).gameObjects;
                     let gameObjects = [];
                     objects.forEach((object) => {
                         let gameComponent;
-                        console.log(object.type)
-                        if (object.type=="Player") {
-                             gameComponent = new gameObject(object.sprite_location, object.x, object.y, object.height, object.width, object.angle);
+
+                        if (object.type=="Player") {  // if the type is a player create a game object, else create a bullet
+                             gameComponent = new GameObject(object.sprite_location, object.x, object.y, object.height, object.width, object.angle);
                         }
                         else
                              gameComponent = new bullet(object.sprite_location, object.x, object.y, object.height, object.width, object.angle)
@@ -123,6 +124,9 @@
         }
     }
 
+    /**
+     * handles inputs, and sends them to the controller
+     */
     function sendInputs() {
         let moveDir = [0, 0]; // player movement direction
         let playerDir = 0; // player direction in degrees
@@ -167,13 +171,13 @@
         context.clearRect(0, 0, canvas.width, canvas.height)
 
         gameObjects.forEach((object) => {
-            object.draw()
+            object.draw() // draws ech object to the client
         })
 
         sendInputs()
     }
 
-
+    //angle calculator
     function getAngleDegrees(fromX, fromY, toX, toY, force360 = true) {
         let deltaX = fromX - toX;
         let deltaY = fromY - toY; // reverse

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@Controller // skal ikke være en restcontroller
+@Controller
 public class GameController
 {
 
@@ -23,13 +23,12 @@ public class GameController
     /**
      *  @return Response is send to the subscriberes  of /topic/messages
      */
-//    @MessageMapping("/myMessages") //definere pathen om stompclienten sendr til
-    @SendTo("/topic/update") // definere hvilken path svaret sendes til.
-    public List<Updatable> updateClient()
-    {
-        GameInfo info = GameInfo.getInstance();
-        return info.getGameObjects();
-    }
+//    @SendTo("/topic/update") // definere hvilken path svaret sendes til.
+//    public List<Updatable> updateClient()
+//    {
+//        GameInfo info = GameInfo.getInstance();
+//        return info.getGameObjects();
+//    }
 
     @MessageMapping("/createPlayer")
     void createPlayer(Message playerId)
